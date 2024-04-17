@@ -8,7 +8,7 @@ public class OrderDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long orderId;
+    private long orderId;
     private String orderFullName;
     private String orderFullOrder;
     private String orderContactNumber;
@@ -72,9 +72,9 @@ public class OrderDetail {
         return Math.toIntExact(orderId);
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = Long.valueOf(orderId);
-    }
+//    public void setOrderId(Integer orderId) {
+//        this.orderId = orderId;
+//    }
 
     public String getOrderFullName() {
         return orderFullName;

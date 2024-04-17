@@ -67,6 +67,33 @@ public class OrderDetailService {
         return orderProductList;
     }
 
+    //recherche par transactionId
+    public List<OrderProduct> getOrderProductListd2(String transactionId) {
+        List<OrderProduct> orderProductList = new ArrayList<>();
+        Optional<OrderDetail> optionalOrderDetail = orderDetailRepository.findByTransactionId(transactionId);
+        if (optionalOrderDetail.isPresent()) {
+            OrderDetail orderDetail = optionalOrderDetail.get();
+            OrderProduct orderProduct = new OrderProduct();
+            orderProduct.setProductName(orderDetail.getProduct().getProductName());
+            orderProduct.setOrderAmount(orderDetail.getOrderAmount());
+            orderProduct.setOrderContactNumber(orderDetail.getOrderContactNumber());
+            orderProduct.setOrderFullName(orderDetail.getOrderFullName());
+            orderProduct.setOrderFullOrder(orderDetail.getOrderFullOrder());
+            orderProduct.setOrderStatus(orderDetail.getOrderStatus());
+            orderProduct.setTransactionId(orderDetail.getTransactionId());
+            orderProduct.setProductDiscountedPrice(orderDetail.getProduct().getProductDiscountedPrice());
+            orderProduct.setTime(orderDetail.getTime());
+            orderProductList.add(orderProduct);
+        }
+        System.out.println("liste de donnees: " + orderProductList);
+        return orderProductList;
+    }
+
+    public Integer getOrderDetailId(String transactionId){
+        Optional<OrderDetail> optionalOrderDetail = orderDetailRepository.findByTransactionId(transactionId);
+        return optionalOrderDetail.get().getOrderId();
+    }
+
     public List<OrderProduct> getOrderProductListd() {
         List<OrderProduct> orderProductList = new ArrayList<>();
         List<OrderDetail> orderDetails = getAll();

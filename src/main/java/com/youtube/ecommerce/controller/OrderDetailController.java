@@ -28,7 +28,7 @@ public class OrderDetailController {
     @PreAuthorize("hasRole('User')")
     @GetMapping({"/getOrderDetails"})
     public List<OrderDetail> getOrderDetails() {
-        return orderDetailService.getOrderDetails();
+        System.out.println(orderDetailService.getOrderDetails());return orderDetailService.getOrderDetails();
     }
 
     @PreAuthorize("hasRole('Admin')")
@@ -76,12 +76,38 @@ public class OrderDetailController {
     public byte[] getFacturePdf(HttpServletResponse response, @PathVariable("OrderId") Integer id) throws JRException, IOException {
         byte[] bytes = null;
 
+        System.out.println("Appel de l'API");
         List<OrderProduct> orders = orderDetailService.getOrderProductListd(id);
         // Génération du rapport Jaspersoft
         Report report = new Report();
 
         try {
             bytes = JasperExportManager.exportReportToPdf(report.generateReportInvoice(orders,id));
+
+            // Envoi du rapport au client
+            response.setContentType("application/pdf");
+            response.setContentLength(bytes.length);
+            response.getOutputStream().write(bytes);
+
+        }catch (JRException e){
+            e.printStackTrace();
+        }
+        return bytes;
+    }
+
+    // generation de la facture en fonction de l'id de la transaction
+    @GetMapping("/pdfInvoice2/{transactionId}")
+    @ResponseBody
+    public byte[] getFacture2Pdf(HttpServletResponse response, @PathVariable("transactionId") String transactionId) throws JRException, IOException {
+        byte[] bytes = null;
+
+        System.out.println("Appel de l'API");
+        List<OrderProduct> orders = orderDetailService.getOrderProductListd2(transactionId);
+        // Génération du rapport Jaspersoft
+        Report report = new Report();
+
+        try {
+            bytes = JasperExportManager.exportReportToPdf(report.generateReportInvoice(orders, orderDetailService.getOrderDetailId(transactionId)));
 
             // Envoi du rapport au client
             response.setContentType("application/pdf");
